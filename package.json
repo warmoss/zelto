@@ -1,0 +1,18 @@
+{
+    "private": true,
+    "name": "zelto",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "zelto",
+    "scripts": {
+        "build": "pnpm -r run build && gulp"
+    },
+    "keywords": [],
+    "author": "maks <maks>@sapling.ink",
+    "dependencies": {
+        "mokit": "link:packages/mokit"
+    },
+    "devDependencies": {
+        "gulp": "^5.0.1"
+    }
+}
