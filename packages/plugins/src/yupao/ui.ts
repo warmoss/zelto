@@ -1,5 +1,14 @@
 import { ZeltoRule } from "@/types/document";
 
+const CONSTANTS = {
+    companyNameClass: ".abjhb.acbij",
+    jobNameClass: ".acbia",
+    containterClass: ".acbhi.acbhj",
+    containterFooterClass: ".acbii",
+    tagContainterClass: ".acbig",
+    tagClass: "acaea acaef acaeb acaeg acbih",
+}
+
 function render() {
     const target = getTargetContainer();
     if (!target) {
@@ -18,9 +27,9 @@ function renderJob(root: HTMLElement) {
     }
     root.setAttribute("data-zelto-processed", "1");
 
-    const companyNameNode = root.querySelector<HTMLDivElement>(".abjeb.acbbd");
+    const companyNameNode = root.querySelector<HTMLDivElement>(CONSTANTS.companyNameClass);
     const companyName = companyNameNode?.innerText?.trim() ?? "";
-    const jobNameNode = root.querySelector<HTMLDivElement>(".acbae");
+    const jobNameNode = root.querySelector<HTMLDivElement>(CONSTANTS.jobNameClass);
     const jobName = jobNameNode?.innerText?.trim() ?? "";
 
     const analyzeData = {
@@ -54,7 +63,7 @@ function enhanceJobAnalyzeView(root: HTMLElement, data: { [key: string]: string 
     }
     const prompt = lines.join("\n")
 
-    const tagsContainter = root.querySelector<HTMLDivElement>(".acbba");
+    const tagsContainter = root.querySelector<HTMLDivElement>(CONSTANTS.tagContainterClass);
     if (!tagsContainter) {
         return;
     }
@@ -62,7 +71,7 @@ function enhanceJobAnalyzeView(root: HTMLElement, data: { [key: string]: string 
     const defaultStyle = { color: "blue", text: "复制提示词", hoverColor: "lightblue", }
     const successStyle = { color: "blue", text: "复制成功" }
     const promptTag = document.createElement("span");
-    promptTag.className = "acabb acabg acabc acabh acbbb";
+    promptTag.className = CONSTANTS.tagClass;
     promptTag.style.color = defaultStyle.color;
     promptTag.innerText = defaultStyle.text;
     promptTag.addEventListener("click", async (event) => {
@@ -93,23 +102,23 @@ async function copyTextToClipboard(text: string) {
 function enhanceJobView(root: HTMLElement, rule: ZeltoRule) {
     const color = rule.action == "block" ? "#CCC" : "yellow";
 
-    const containter = root.querySelector<HTMLDivElement>(".acbac.acbad");
+    const containter = root.querySelector<HTMLDivElement>(CONSTANTS.containterClass);
     if (containter) {
         containter.style.background = color;
     }
-    const containterFooter = root.querySelector<HTMLDivElement>(".acbbc");
+    const containterFooter = root.querySelector<HTMLDivElement>(CONSTANTS.containterFooterClass);
     if (containterFooter) {
         containterFooter.style.background = color;
     }
 
-    const tagsContainter = root.querySelector<HTMLDivElement>(".acbba");
+    const tagsContainter = root.querySelector<HTMLDivElement>(CONSTANTS.tagContainterClass);
     if (!tagsContainter) {
         return;
     }
 
     const tagColor = rule.action == "block" ? "red" : "orange";
     const keywordTag = document.createElement("span");
-    keywordTag.className = "acabb acabg acabc acabh acbbb";
+    keywordTag.className = CONSTANTS.tagClass;
     keywordTag.style.color = tagColor;
     keywordTag.innerText = (rule.keyword ?? "") + "-" + (rule.reason ?? "");
     tagsContainter.prepend(keywordTag);
@@ -126,15 +135,12 @@ function callback() {
 export function watch() {
     render();
 
-    const config = {
-        childList: true,
-    };
-
-    const target = getTargetContainer();
+    const target = document.body;
     if (!target) {
         return;
     }
 
+    const config = { childList: true, subtree: true };
     const observer = new MutationObserver(callback);
     observer.observe(target, config);
     return observer;
